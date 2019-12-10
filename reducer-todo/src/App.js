@@ -1,42 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
+
 import ReactDOM from 'react-dom';
+
+import { reducer, tasksInit } from './reducers/TodoReducer';
 
 import TodoList from './components/TodoComponents/TodoList';
 import TodoForm from './components/TodoComponents/TodoForm';
 
 function App() {
-  const tasksInit = [
-    {
-      task: 'Organize Garage',
-      id: 1528817077286,
-      completed: false
-    },
-    {
-      task: 'Bake Cookies',
-      id: 1528817084358,
-      completed: false
-    }
-  ];
-  const [tasks, setTasks] = useState(tasksInit);
-  
+  const [tasks, dispatch] = useReducer(reducer, tasksInit);
+
   const addItem = newItemText => {
-    const newItem = {
-      task: newItemText,
-      id: Date.now(),
-      completed: false
-    };
-    setTasks([...tasks, newItem]);
+    dispatch({ type: 'ADD_TODO', payload: newItemText});
   };
 
   const changeCompleted = item => {
-    item.completed = !item.completed;
+    dispatch({ type: 'CHANGE_TODO', payload: item});
   }
 
   const clearCompleted = () => {
-    const newTasks = tasks.filter(function (task) {
-      return task.completed !== true
-    });
-    setTasks(newTasks);
+    dispatch({ type: 'CLEAR_TODO' });
   }
 
   return (
@@ -47,7 +30,7 @@ function App() {
       </div>
       <TodoForm addItem={addItem} change={clearCompleted} />
     </div>
-    );
+  );
   }
 
 
